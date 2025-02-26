@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 50px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .phishing {
+            background-color: #dc3545;
+        }
+
+        .benign {
+            background-color: #198754;
+        }
+
+        .defacement {
+            background-color: #fd7e14;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .confidence-meter {
+            height: 25px;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .confidence-value {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center 
+                        {% if prediction == 'Phishing' %}phishing
+                        {% elif prediction == 'Benign' %}benign
+                        {% else %}defacement{% endif %}">
+                <h2>Detection Result</h2>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h3 class="
+                        {% if prediction == 'Phishing' %}text-danger
+                        {% elif prediction == 'Benign' %}text-success
+                        {% else %}text-warning{% endif %}">
+                        {{ prediction }}
+                    </h3>
+                    <p class="lead">
+                        The URL:<br>
+                        <strong>{{ url }}</strong><br>
+                        {% if prediction == 'Phishing' %}
+                        has been identified as a potential phishing site.
+                        {% elif prediction == 'Benign' %}
+                        appears to be safe based on our analysis.
+                        {% else %}
+                        appears to be defaced or compromised.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Confidence Meter -->
+                <div class="text-center mb-4">
+                    <p>Confidence Level:</p>
+                    <div class="progress confidence-meter">
+                        <div class="progress-bar 
+                                {% if prediction == 'Phishing' %}bg-danger
+                                {% elif prediction == 'Benign' %}bg-success
+                                {% else %}bg-warning{% endif %}" role="progressbar" style="width: {{ confidence }}%;"
+                            aria-valuenow="{{ confidence }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <p class="confidence-value">{{ confidence }}% confidence</p>
+                </div>
+
+                <div class="alert 
+                          {% if prediction == 'Phishing' %}alert-danger
+                          {% elif prediction == 'Benign' %}alert-success
+                          {% else %}alert-warning{% endif %}" role="alert">
+                    {% if prediction == 'Phishing' %}
+                    <h4 class="alert-heading">Warning!</h4>
+                    <p>This URL shows characteristics commonly associated with phishing websites. Exercise extreme
+                        caution:</p>
+                    <ul>
+                        <li>Do not enter personal information</li>
+                        <li>Do not download files from this site</li>
+                        <li>Do not enter login credentials</li>
+                    </ul>
+                    {% elif prediction == 'Benign' %}
+                    <h4 class="alert-heading">Good News!</h4>
+                    <p>This URL appears legitimate based on our analysis. However, always remain vigilant:</p>
+                    <ul>
+                        <li>Verify the site is what you expected</li>
+                        <li>Check for SSL certificates (https)</li>
+                        <li>Be careful with sensitive information</li>
+                    </ul>
+                    {% else %}
+                    <h4 class="alert-heading">Caution!</h4>
+                    <p>This URL appears to be defaced or compromised. Exercise caution:</p>
+                    <ul>
+                        <li>The site may have been hacked</li>
+                        <li>The content may not be what you expected</li>
+                        <li>Avoid downloading anything from this site</li>
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-primary">Check Another URL</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
